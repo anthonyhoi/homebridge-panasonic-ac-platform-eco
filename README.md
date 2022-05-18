@@ -1,150 +1,95 @@
+# Homebridge Panasonic AC Platform
 
-<p align="center">
+[![verified-by-homebridge](https://badgen.net/badge/homebridge/verified/purple)](https://github.com/homebridge/homebridge/wiki/Verified-Plugins)
+[![GitHub version](https://img.shields.io/github/package-json/v/embee8/homebridge-panasonic-ac-platform?label=GitHub)](https://github.com/embee8/homebridge-panasonic-ac-platform)
+[![Publish package to npm](https://img.shields.io/github/workflow/status/embee8/homebridge-panasonic-ac-platform/Publish%20package%20to%20npm?label=Publish%20to%20npm)](https://github.com/embee8/homebridge-panasonic-ac-platform/actions/workflows/npm-publish.yml)
+[![npm version](https://img.shields.io/npm/v/homebridge-panasonic-ac-platform?color=%23cb3837&label=npm)](https://www.npmjs.com/package/homebridge-panasonic-ac-platform)
 
-<img src="https://github.com/homebridge/branding/raw/master/logos/homebridge-wordmark-logo-vertical.png" width="150">
+`homebridge-panasonic-ac-platform` is a dynamic platform plugin for [Homebridge](https://homebridge.io) that provides HomeKit support for Panasonic single and multi-split air conditioning systems.
 
-</p>
+## How it works
+The plugin communicates with your AC units through the Comfort Cloud service. This means your units must be registered and set up there before you can use this plugin.
 
+All devices that are set up on your Comfort Cloud account will appear in your Home app. If you remove a device from your Comfort Cloud account, it will also disappear from your Home app after you restart Homebridge.
 
-# Homebridge Platform Plugin Template
+## Comfort Cloud account
 
-This is a template Homebridge platform plugin and can be used as a base to help you get started developing your own plugin.
+In the past, using the same account on multiple devices often resulted in being logged out of one of them. This made it necessary to create a secondary account in order for the plugin to operate reliably.
 
-This template should be used in conjunction with the [developer documentation](https://developers.homebridge.io/). A full list of all supported service types, and their characteristics is available on this site.
+Recent improvements to Panasonic's token management should now allow you to simply use your main login details for the Homebridge plugin as well (see Comfort Cloud app release notes for 1.14.0).
 
-## Clone As Template
+In case you are still experiencing random logouts, refer to [this guide](https://github.com/embee8/homebridge-panasonic-ac-platform/blob/master/docs/dual-account-setup.md) for instructions on how to create a dual-account setup. It explains how devices can be shared with a dedicated account that can be used for Homebridge.
 
-Click the link below to create a new GitHub Repository using this template, or click the *Use This Template* button above.
+## Homebridge setup
+Configure the plugin through the settings UI or directly in the JSON editor:
 
-<span align="center">
-
-### [Create New Repository From Template](https://github.com/homebridge/homebridge-plugin-template/generate)
-
-</span>
-
-## Setup Development Environment
-
-To develop Homebridge plugins you must have Node.js 12 or later installed, and a modern code editor such as [VS Code](https://code.visualstudio.com/). This plugin template uses [TypeScript](https://www.typescriptlang.org/) to make development easier and comes with pre-configured settings for [VS Code](https://code.visualstudio.com/) and ESLint. If you are using VS Code install these extensions:
-
-* [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-
-## Install Development Dependencies
-
-Using a terminal, navigate to the project folder and run this command to install the development dependencies:
-
-```
-npm install
-```
-
-## Update package.json
-
-Open the [`package.json`](./package.json) and change the following attributes:
-
-* `name` - this should be prefixed with `homebridge-` or `@username/homebridge-` and contain no spaces or special characters apart from a dashes
-* `displayName` - this is the "nice" name displayed in the Homebridge UI
-* `repository.url` - Link to your GitHub repo
-* `bugs.url` - Link to your GitHub repo issues page
-
-When you are ready to publish the plugin you should set `private` to false, or remove the attribute entirely.
-
-## Update Plugin Defaults
-
-Open the [`src/settings.ts`](./src/settings.ts) file and change the default values:
-
-* `PLATFORM_NAME` - Set this to be the name of your platform. This is the name of the platform that users will use to register the plugin in the Homebridge `config.json`.
-* `PLUGIN_NAME` - Set this to be the same name you set in the [`package.json`](./package.json) file. 
-
-Open the [`config.schema.json`](./config.schema.json) file and change the following attribute:
-
-* `pluginAlias` - set this to match the `PLATFORM_NAME` you defined in the previous step.
-
-## Build Plugin
-
-TypeScript needs to be compiled into JavaScript before it can run. The following command will compile the contents of your [`src`](./src) directory and put the resulting code into the `dist` folder.
-
-```
-npm run build
+```json
+{
+  "platforms": [
+    {
+        "platform": "Panasonic AC Platform",
+        "name": "Homebridge Panasonic AC Platform",
+        "email": "mail@example.com",
+        "password": "********",
+        "exposeOutdoorUnit": true,
+        "debugMode": false,
+        "appVersionOverride": "1.14.0",
+        "suppressOutgoingUpdates": false,
+        "minHeatingTemperature": 16
+    }
+  ]
+}
 ```
 
-## Link To Homebridge
+Required:
 
-Run this command so your global install of Homebridge can discover the plugin in your development environment:
+* `platform` (string):
+Tells Homebridge which platform this config belongs to. Leave as is.
 
-```
-npm link
-```
+* `name` (string):
+Will be displayed in the Homebridge log.
 
-You can now start Homebridge, use the `-D` flag so you can see debug log messages in your plugin:
+* `email` (string):
+The username of your Comfort Cloud account.
 
-```
-homebridge -D
-```
+* `password` (string):
+The password of your account.
 
-## Watch For Changes and Build Automatically
+Optional:
 
-If you want to have your code compile automatically as you make changes, and restart Homebridge automatically between changes you can run:
+* `exposeOutdoorUnit` (boolean):
+If `true`, the plugin will create a separate accessory for your outdoor unit which will display the (outdoor) temperature it measures. This can be used for monitoring and automation purposes.
 
-```
-npm run watch
-```
+* `debugMode` (boolean):
+If `true`, the plugin will print debugging information to the Homebridge log.
 
-This will launch an instance of Homebridge in debug mode which will restart every time you make a change to the source code. It will load the config stored in the default location under `~/.homebridge`. You may need to stop other running instances of Homebridge while using this command to prevent conflicts. You can adjust the Homebridge startup command in the [`nodemon.json`](./nodemon.json) file.
+* `appVersionOverride` (string):
+The plugin will automatically use the last known working value when this setting is empty or undefined (default). This setting allows you to override the default value if needed. It should reflect the latest version on the App Store, although older clients might remain supported for some time.
 
-## Customise Plugin
+* `suppressOutgoingUpdates` (boolean):
+If `true`, changes in the Home app will not be sent to Comfort Cloud. Useful for testing your installation without constantly switching the state of your AC to minimise wear and tear.
 
-You can now start customising the plugin template to suit your requirements.
+* `minHeatingTemperature` (integer):
+The default heating temperature range is 16-30°C. Some Panasonic ACs have an additional heating mode for the range of 8-15°C. If you own such a model, you can use this setting to adjust the minimum value. Leave it empty or undefined to use the default value.
 
-* [`src/platform.ts`](./src/platform.ts) - this is where your device setup and discovery should go.
-* [`src/platformAccessory.ts`](./src/platformAccessory.ts) - this is where your accessory control logic should go, you can rename or create multiple instances of this file for each accessory type you need to implement as part of your platform plugin. You can refer to the [developer documentation](https://developers.homebridge.io/) to see what characteristics you need to implement for each service type.
-* [`config.schema.json`](./config.schema.json) - update the config schema to match the config you expect from the user. See the [Plugin Config Schema Documentation](https://developers.homebridge.io/#/config-schema).
+## Troubleshooting
 
-## Versioning Your Plugin
+If you have any issues with this plugin, enable the debug mode in the settings (and restart the plugin). This will print additional information to the log. If this doesn't help you resolve the issue, feel free to create a [GitHub issue](https://github.com/embee8/homebridge-panasonic-ac-platform/issues) and attach the available debugging information.
 
-Given a version number `MAJOR`.`MINOR`.`PATCH`, such as `1.4.3`, increment the:
+## Contributing
 
-1. **MAJOR** version when you make breaking changes to your plugin,
-2. **MINOR** version when you add functionality in a backwards compatible manner, and
-3. **PATCH** version when you make backwards compatible bug fixes.
+You can contribute to this project in the following ways:
 
-You can use the `npm version` command to help you with this:
+* Test/use the plugin and [report issues and share feedback](https://github.com/embee8/homebridge-panasonic-ac-platform/issues).
 
-```bash
-# major update / breaking changes
-npm version major
+* Review source code changes [before](https://github.com/embee8/homebridge-panasonic-ac-platform/pulls) and [after](https://github.com/embee8/homebridge-panasonic-ac-platform/commits/master) they are published.
 
-# minor update / new features
-npm version update
+* Contribute with your own bug fixes, code clean-ups, or additional features (pull requests are accepted).
 
-# patch / bugfixes
-npm version patch
-```
+## Acknowledgements
+* Thanks to [codyc1515](https://github.com/codyc1515) for creating and maintaining [homebridge-panasonic-air-conditioner](https://github.com/codyc1515/homebridge-panasonic-air-conditioner), which served as motivation for this platform plugin and proved particularly helpful in determining API request/response payloads.
 
-## Publish Package
+* Thanks to the team behind Homebridge. Your efforts do not go unnoticed.
 
-When you are ready to publish your plugin to [npm](https://www.npmjs.com/), make sure you have removed the `private` attribute from the [`package.json`](./package.json) file then run:
-
-```
-npm publish
-```
-
-If you are publishing a scoped plugin, i.e. `@username/homebridge-xxx` you will need to add `--access=public` to command the first time you publish.
-
-#### Publishing Beta Versions
-
-You can publish *beta* versions of your plugin for other users to test before you release it to everyone.
-
-```bash
-# create a new pre-release version (eg. 2.1.0-beta.1)
-npm version prepatch --preid beta
-
-# publsh to @beta
-npm publish --tag=beta
-```
-
-Users can then install the  *beta* version by appending `@beta` to the install command, for example:
-
-```
-sudo npm install -g homebridge-example-plugin@beta
-```
-
-
+## Disclaimer
+All product and company names are trademarks™ or registered® trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.

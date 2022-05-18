@@ -1,16 +1,16 @@
 {
   "private": true,
-  "displayName": "Plugin Name",
-  "name": "homebridge-plugin-name",
+  "displayName": "Panasonic-AC-Platform-Eco",
+  "name": "homebridge-panasonic-ac-platform-eco",
   "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "description": "Custom Version of Panasonic AC Platform with Eco ",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "git://github.com/anthonyhoi/homebridge-panasonic-ac-platform-eco.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/anthonyhoi/homebridge-panasonic-ac-platform-eco/issues"
   },
   "engines": {
     "node": ">=14.18.1",

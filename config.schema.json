@@ -1,16 +1,102 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "Panasonic AC Platform ECO",
   "pluginType": "platform",
   "singular": true,
   "schema": {
     "type": "object",
     "properties": {
       "name": {
-        "title": "Name",
+        "title": "Plugin Name",
+        "description": "This name will be displayed in the Homebridge log.",
         "type": "string",
+        "default": "Homebridge Panasonic AC Platform ECO",
+        "placeholder": "Homebridge Panasonic AC Platform ECO",
+        "required": true
+      },
+      "email": {
+        "title": "Email",
+        "description": "It is recommended to set up a separate account for Homebridge and share the devices from your main account.",
+        "type": "string",
+        "placeholder": "Email",
         "required": true,
-        "default": "Example Dynamic Platform"
+        "format": "email"
+      },
+      "password": {
+        "title": "Password",
+        "type": "string",
+        "placeholder": "Password",
+        "required": true
+      },
+      "exposeOutdoorUnit": {
+        "title": "Expose Outdoor Unit",
+        "description": "When enabled, the plugin will create a separate accessory for your outdoor unit which will display the (outdoor) temperature it measures. This can be used for monitoring and automation purposes.",
+        "type": "boolean",
+        "default": false
+      },
+      "debugMode": {
+        "title": "Debug Mode",
+        "description": "When enabled, debug messages will be written to the log.",
+        "type": "boolean",
+        "default": false
+      },
+      "suppressOutgoingUpdates": {
+        "title": "Suppress outgoing device updates",
+        "description": "When enabled, changes in the Home app will not be sent to Comfort Cloud. Useful for testing your installation without constantly switching the state of your AC to minimise wear and tear.",
+        "type": "boolean"
+      },
+      "appVersionOverride": {
+        "title": "Emulated Comfort Cloud app version (override)",
+        "description": "The plugin will automatically use the last known working value when this setting is empty or undefined (default). This setting allows you to override the default value if needed. It should reflect the latest version on the App Store, although older clients might remain supported for some time.",
+        "type": "string",
+        "placeholder": "1.14.0"
+      },
+      "minHeatingTemperature": {
+        "title": "Minimum heating temperature (override)",
+        "description": "The default heating temperature range is 16-30°C. Some Panasonic ACs have an additional heating mode for the range of 8-15°C. If you own such a model, you can use this setting to adjust the minimum value. Leave it empty or undefined to use the default value.",
+        "type": "integer",
+        "placeholder": "16"
       }
     }
-  }
+  },
+  "layout": [
+    {
+      "type": "flex",
+      "flex-flow": "row wrap",
+      "items": [
+        "name"
+      ]
+    },
+    {
+      "type": "flex",
+      "flex-flow": "row wrap",
+      "items": [
+        {
+          "key": "email",
+          "type": "email"
+        },
+        {
+          "key": "password",
+          "type": "password"
+        }
+      ]
+    },
+    {
+      "type": "flex",
+      "flex-flow": "row wrap",
+      "items": [
+        "exposeOutdoorUnit"
+      ]
+    },
+    {
+      "type": "fieldset",
+      "title": "Advanced configuration",
+      "expandable": true,
+      "items": [
+        "debugMode",
+        "suppressOutgoingUpdates",
+        "appVersionOverride",
+        "minHeatingTemperature"
+      ]
+    }
+  ]
 }
